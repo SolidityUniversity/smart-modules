@@ -13,3 +13,14 @@ states/
 # Optional
 .env
 .env.local
+
+# Foundry
+.env.foundry
+out/
+cache/
+
+# VSCode
+.vscode/
+
+# Node
+node_modules/

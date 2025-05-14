@@ -1,23 +1,66 @@
-# Smart Modules
+## Foundry
 
-**Smart Modules** is a curated collection of Solidity components built for developers who want to master real-world smart contract engineering.
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-This repository is part of an [Solidity Bootcamp](https://bootcamp.solidity.university) program by [Solidity University](https://solidity.university), covering core topics like:
+Foundry consists of:
 
-- ✅ Multisig wallets  
-- ✅ Gasless transactions  
-- ✅ EIP-712 signatures  
-- ✅ TBA
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
+## Documentation
 
-> 🚧 **This repository is under active development.** Expect new modules, upgrades, and educational content in upcoming commits.
+https://book.getfoundry.sh/
 
----
+## Usage
 
-## 🚀 Getting Started
+### Build
 
-```bash
-git clone https://github.com/solidity-university/smart-modules.git
-cd smart-modules
-forge install
-forge build
+```shell
+$ forge build
+```
+
+### Test
+
+```shell
+$ forge test
+```
+
+### Format
+
+```shell
+$ forge fmt
+```
+
+### Gas Snapshots
+
+```shell
+$ forge snapshot
+```
+
+### Anvil
+
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
