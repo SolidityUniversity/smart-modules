@@ -1,6 +1,8 @@
+/// SPDX-License-Identifier: MIT
+/// @title: Contract for wallet with multisig withdraw functionality.
+/// @notice: Allows to withdraw funds from the vault only if a certain number of signers approve the transaction.
+/// @author: Solidity University
 pragma solidity ^0.8.30;
-
-import "./AccessManager.sol";
 
 contract VaultMultisig {
     /// @notice The number of signatures required to execute a transaction
@@ -8,9 +10,6 @@ contract VaultMultisig {
 
     /// @notice The number of transfers executed
     uint256 public transfersCount;
-
-    /// @notice The access manager
-    AccessManager public accessManager;
 
     /// @notice The current multisig signers
     address[] public currentMultiSigSigners;
@@ -99,18 +98,12 @@ contract VaultMultisig {
         _;
     }
 
-    modifier onlyMultisigAdmin() {
-        if (!accessManager.isMultisigAdmin(msg.sender)) revert InvalidMultisigAdmin();
-        _;
-    }
-
     /// @notice Initializes the multisig contract
     /// @param _signers The array of multisig signers
     /// @param _quorum The number of signatures required to execute a transaction
     constructor(
         address[] memory _signers,
-        uint256 _quorum,
-        address _accessManager
+        uint256 _quorum
     ) {
         if (_signers.length == 0) revert SignersArrayCannotBeEmpty();
         if (_quorum > _signers.length) revert QuorumGreaterThanSigners();
@@ -121,37 +114,6 @@ contract VaultMultisig {
         }
 
         quorum = _quorum;
-        accessManager = AccessManager(_accessManager);
-    }
-
-    /// @notice Updates the multisig signers
-    /// @param _signers The array of multisig signers
-    function updateSigners(address[] memory _signers) external onlyMultisigAdmin {
-        if (_signers.length == 0) revert SignersArrayCannotBeEmpty();
-        if (_signers.length < quorum) revert QuorumGreaterThanSigners();
-
-        for (uint256 i = 0; i < currentMultiSigSigners.length; i++) {
-            multiSigSigners[currentMultiSigSigners[i]] = false;
-        }
-
-        for (uint256 i = 0; i < _signers.length; i++) {
-            multiSigSigners[_signers[i]] = true;
-        }
-
-        currentMultiSigSigners = _signers;
-
-        emit MultiSigSignersUpdated();
-    }
-
-    /// @notice Updates the quorum
-    /// @param _quorum The new quorum
-    function updateQuorum(uint256 _quorum) external onlyMultisigAdmin {
-        if (_quorum > currentMultiSigSigners.length) revert QuorumGreaterThanSigners();
-        if (_quorum == 0) revert QuorumCannotBeZero();
-
-        quorum = _quorum;
-
-        emit QuorumUpdated(_quorum);
     }
 
     /// @notice Initiates a transfer
