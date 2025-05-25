@@ -29,10 +29,10 @@ contract VaultMultisig {
     }
 
     /// @notice The mapping of transfer IDs to transfer details
-    mapping (uint256 => Transfer) private transfers;
+    mapping(uint256 => Transfer) private transfers;
 
     /// @notice The mapping for verification that address is a signer
-    mapping (address => bool) private multiSigSigners;
+    mapping(address => bool) private multiSigSigners;
 
     /// @notice Checks that signers array is not empty
     error SignersArrayCannotBeEmpty();
@@ -101,10 +101,7 @@ contract VaultMultisig {
     /// @notice Initializes the multisig contract
     /// @param _signers The array of multisig signers
     /// @param _quorum The number of signatures required to execute a transaction
-    constructor(
-        address[] memory _signers,
-        uint256 _quorum
-    ) {
+    constructor(address[] memory _signers, uint256 _quorum) {
         if (_signers.length == 0) revert SignersArrayCannotBeEmpty();
         if (_quorum > _signers.length) revert QuorumGreaterThanSigners();
         if (_quorum == 0) revert QuorumCannotBeZero();
@@ -155,7 +152,7 @@ contract VaultMultisig {
         uint256 balance = address(this).balance;
         if (transfer.amount >= balance) revert InsufficientBalance(balance, transfer.amount);
 
-        (bool success, ) = transfer.to.call{value: transfer.amount}("");
+        (bool success,) = transfer.to.call{value: transfer.amount}("");
         if (!success) revert TransferFailed(_transferId);
 
         transfer.executed = true;
@@ -172,12 +169,11 @@ contract VaultMultisig {
     /// @return amount The amount of tokens to transfer
     /// @return approvals The number of approvals required to execute the transfer
     /// @return executed Whether the transfer has been executed
-    function getTransfer(uint256 _transferId) external view returns (
-        address to,
-        uint256 amount,
-        uint256 approvals,
-        bool executed
-    ) {
+    function getTransfer(uint256 _transferId)
+        external
+        view
+        returns (address to, uint256 amount, uint256 approvals, bool executed)
+    {
         Transfer storage transfer = transfers[_transferId];
         return (transfer.to, transfer.amount, transfer.approvals, transfer.executed);
     }
