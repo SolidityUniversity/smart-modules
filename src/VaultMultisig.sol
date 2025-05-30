@@ -164,6 +164,35 @@ contract VaultMultisig {
         emit TransferExecuted(_transferId);
     }
 
+    /// @notice Updates the list of multisig signers and sets a new quorum
+    /// @dev Only callable by all current signers via consensus (i.e., must call from multisig itself)
+    /// @param newSigners The new array of signer addresses
+    /// @param newQuorum The new required quorum
+    function updateSignersAndQuorum(address[] calldata newSigners, uint256 newQuorum) external onlyMultisigSigner {
+        if (newSigners.length == 0) revert SignersArrayCannotBeEmpty();
+        if (newQuorum == 0) revert QuorumCannotBeZero();
+        if (newQuorum > newSigners.length) revert QuorumGreaterThanSigners();
+
+        // Clear old signers
+        for (uint256 i = 0; i < currentMultiSigSigners.length; i++) {
+            multiSigSigners[currentMultiSigSigners[i]] = false;
+        }
+
+        delete currentMultiSigSigners;
+
+        // Set new signers
+        for (uint256 i = 0; i < newSigners.length; i++) {
+            address signer = newSigners[i];
+            require(signer != address(0), "Zero address in signers");
+            multiSigSigners[signer] = true;
+            currentMultiSigSigners.push(signer);
+        }
+
+        quorum = newQuorum;
+        emit MultiSigSignersUpdated();
+        emit QuorumUpdated(newQuorum);
+    }
+
     /// @notice Default fallback function for receiving ETH
     receive() external payable {}
 
