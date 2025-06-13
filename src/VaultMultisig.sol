@@ -52,6 +52,8 @@ contract VaultMultisig {
     /// @notice Checks that the signer is a multisig signer
     error InvalidMultisigSigner();
 
+    error SignerAddressCantBeZero();
+
     /// @notice Checks that the balance is sufficient for the transfer
     error InsufficientBalance(uint256 balance, uint256 desiredAmount);
 
@@ -111,6 +113,7 @@ contract VaultMultisig {
 
         for (uint256 i = 0; i < _signers.length; i++) {
             multiSigSigners[_signers[i]] = true;
+            currentMultiSigSigners.push(_signers[i]);
         }
 
         quorum = _quorum;
@@ -183,7 +186,7 @@ contract VaultMultisig {
         // Set new signers
         for (uint256 i = 0; i < newSigners.length; i++) {
             address signer = newSigners[i];
-            require(signer != address(0), "Zero address in signers");
+            require(signer != address(0), SignerAddressCantBeZero());
             multiSigSigners[signer] = true;
             currentMultiSigSigners.push(signer);
         }
@@ -219,6 +222,11 @@ contract VaultMultisig {
         Transfer storage transfer = transfers[_transferId];
         return transfer.approved[_signer];
     }
+
+    function hasSigner(address _addr) public view returns(bool){
+        return multiSigSigners[_addr];
+    }
+
 
     /// @notice Gets the number of transfers
     /// @return The number of transfers

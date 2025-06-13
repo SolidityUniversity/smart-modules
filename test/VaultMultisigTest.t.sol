@@ -10,10 +10,14 @@ contract VaultMultisigTest is Test {
     uint256 quorum = 2;
     address[] signers;
     address[] signersArray;
+    address[] newSignersArray;
 
     address signer1 = vm.addr(1);
     address signer2 = vm.addr(2);
     address signer3 = vm.addr(3);
+    address signer4 = vm.addr(4);
+    address signer5 = vm.addr(5);
+    address signer6 = vm.addr(6);
     address defaultRecepient = vm.addr(999);
     address stranger = vm.addr(777);
 
@@ -189,6 +193,43 @@ contract VaultMultisigTest is Test {
 
         vm.expectRevert(VaultMultisig.QuorumCannotBeZero.selector);
         new VaultMultisig(signersArray, 0);
+    }
+
+    function test_updateSignersAndQuorumWork() public {
+        assertEq(vault.currentMultiSigSigners(0),signer1);
+        assertEq(vault.currentMultiSigSigners(1),signer2);
+        assertEq(vault.currentMultiSigSigners(2),signer3);
+        assertFalse(vault.hasSigner(signer4));
+        assertFalse(vault.hasSigner(signer5));
+        assertFalse(vault.hasSigner(signer6));
+
+        newSignersArray.push(signer4);
+        newSignersArray.push(signer5);
+        newSignersArray.push(signer6);
+
+        vm.prank(signer1);
+        vm.expectEmit(false, false, false, false);
+        emit VaultMultisig.MultiSigSignersUpdated();
+        vm.expectEmit(false, false, false, true);
+        emit VaultMultisig.QuorumUpdated(2);
+
+        vault.updateSignersAndQuorum(newSignersArray,2);
+        assertEq(vault.currentMultiSigSigners(0),signer4);
+        assertEq(vault.currentMultiSigSigners(1),signer5);
+        assertEq(vault.currentMultiSigSigners(2),signer6);
+        assertFalse(vault.hasSigner(signer1));
+        assertFalse(vault.hasSigner(signer2));
+        assertFalse(vault.hasSigner(signer3));
+
+
+        newSignersArray.push(address(0));
+        vm.prank(signer4);
+        vm.expectRevert(VaultMultisig.SignerAddressCantBeZero.selector);
+        vault.updateSignersAndQuorum(newSignersArray,2);
+
+
+
+
     }
 
     function fundVault(uint256 amount) internal {
