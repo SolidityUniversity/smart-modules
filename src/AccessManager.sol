@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./Roles.sol";
+
 contract AccessManager is AccessControl {
     using Roles for bytes32;
 
