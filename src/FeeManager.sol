@@ -3,16 +3,15 @@ pragma solidity ^0.8.30;
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-
 import "./ISwap.sol";
 
 contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     uint256 public constant FEE_DENOMINATOR = 10000;
-
-    uint256 public fee;
+    uint256 public fee; // Fee in basis points (e.g., 250 = 2.5%)
 
     function initialize(uint256 _fee) external initializer {
-        _disableInitializers();
+        __AccessControl_init();
+        __UUPSUpgradeable_init();
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         fee = _fee;
     }
@@ -23,7 +22,13 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
         fee = _fee;
     }
 
+    /// @notice Calculate absolute fee amount for a swap
+    /// @param swapParams The swap parameters
+    /// @return Absolute fee amount in output token units
     function getFee(ISwap.SwapParams memory swapParams) external view returns (uint256) {
-        return (swapParams.amount0 * fee) / FEE_DENOMINATOR;
+        // Calculate fee based on input amount and convert to output token equivalent
+        uint256 amountOut =
+            (swapParams.amount0 * swapParams.reserveToken1) / (swapParams.reserveToken0 + swapParams.amount0);
+        return (amountOut * fee) / FEE_DENOMINATOR;
     }
 }
