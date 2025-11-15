@@ -54,13 +54,14 @@ contract EIP712Swap is EIP712 {
         if (_swapRequest.nonce != _nonces[_swapRequest.sender]) revert InvalidNonce();
 
         _nonces[_swapRequest.sender]++;
-        LiquidityPool(_swapRequest.pool).swap(
-            _swapRequest.sender,
-            _swapRequest.tokenIn,
-            _swapRequest.tokenOut,
-            _swapRequest.amountIn,
-            _swapRequest.minAmountOut
-        );
+        LiquidityPool(_swapRequest.pool)
+            .swap(
+                _swapRequest.sender,
+                _swapRequest.tokenIn,
+                _swapRequest.tokenOut,
+                _swapRequest.amountIn,
+                _swapRequest.minAmountOut
+            );
 
         return true;
     }
