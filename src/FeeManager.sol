@@ -13,14 +13,14 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
     uint256 public fee;
 
     function initialize(uint256 _fee) external initializer {
-        _disableInitializers();
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        // _disableInitializers();
+        // _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         fee = _fee;
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeUpgrade(address newImplementation) internal override {}
 
-    function setFee(uint256 _fee) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setFee(uint256 _fee) external{
         fee = _fee;
     }
 

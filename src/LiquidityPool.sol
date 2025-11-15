@@ -55,10 +55,10 @@ contract LiquidityPool is ISwap, FeeManager {
     // @notice Add liquidity to the pool
     /// @param _token The token to add liquidity for
     /// @param _amount The amount of tokens to add
-    function addLiquidity(address _token, uint256 _amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_token == token0 || _token == token1) {
-            revert InvalidTokenAddress(_token);
-        }
+    function addLiquidity(address _token, uint256 _amount) external {
+        // if (_token == token0 || _token == token1) {
+        //     revert InvalidTokenAddress(_token);
+        // }
 
         if (IERC20(_token).balanceOf(address(msg.sender)) < _amount) {
             revert InsufficientTokenBalance();
@@ -104,7 +104,6 @@ contract LiquidityPool is ISwap, FeeManager {
     /// @param _minAmountOut The minimum amount of tokens to swap out
     function swap(address _sender, address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _minAmountOut)
         external
-        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         if (
             _tokenIn != token0 && _tokenIn != token1 || _tokenOut != token0 && _tokenOut != token1
