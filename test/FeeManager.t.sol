@@ -56,11 +56,7 @@ contract FeeManagerTest is Test {
 
     function test_GetFee_WithDifferentAmounts() public view {
         ISwap.SwapParams memory params = ISwap.SwapParams({
-            token0: address(0x1),
-            token1: address(0x2),
-            amount0: 500e18,
-            reserveToken0: 5000e18,
-            reserveToken1: 10000e6
+            token0: address(0x1), token1: address(0x2), amount0: 500e18, reserveToken0: 5000e18, reserveToken1: 10000e6
         });
 
         uint256 fee = feeManager.getFee(params);
@@ -69,11 +65,7 @@ contract FeeManagerTest is Test {
 
     function test_GetFee_ZeroAmount() public view {
         ISwap.SwapParams memory params = ISwap.SwapParams({
-            token0: address(0x1),
-            token1: address(0x2),
-            amount0: 0,
-            reserveToken0: 10000e18,
-            reserveToken1: 20000e6
+            token0: address(0x1), token1: address(0x2), amount0: 0, reserveToken0: 10000e18, reserveToken1: 20000e6
         });
 
         uint256 fee = feeManager.getFee(params);
@@ -83,11 +75,7 @@ contract FeeManagerTest is Test {
     function test_FeeCalculationWithSimpleNumbers() public view {
         // Use numbers that result in clean division
         ISwap.SwapParams memory params = ISwap.SwapParams({
-            token0: address(0x1),
-            token1: address(0x2),
-            amount0: 1000,
-            reserveToken0: 10000,
-            reserveToken1: 10000
+            token0: address(0x1), token1: address(0x2), amount0: 1000, reserveToken0: 10000, reserveToken1: 10000
         });
 
         uint256 fee = feeManager.getFee(params);
@@ -103,19 +91,12 @@ contract FeeManagerTest is Test {
     function test_FeeScalesWithAmount() public view {
         // Test that larger amounts result in larger fees
         ISwap.SwapParams memory smallParams = ISwap.SwapParams({
-            token0: address(0x1),
-            token1: address(0x2),
-            amount0: 100e18,
-            reserveToken0: 10000e18,
-            reserveToken1: 10000e6
+            token0: address(0x1), token1: address(0x2), amount0: 100e18, reserveToken0: 10000e18, reserveToken1: 10000e6
         });
 
         ISwap.SwapParams memory largeParams = ISwap.SwapParams({
-            token0: address(0x1),
-            token1: address(0x2),
-            amount0: 1000e18, // 10x larger
-            reserveToken0: 10000e18,
-            reserveToken1: 10000e6
+            token0: address(0x1), token1: address(0x2), amount0: 1000e18, reserveToken0: 10000e18, reserveToken1: 10000e6
+            // 10x larger
         });
 
         uint256 smallFee = feeManager.getFee(smallParams);
