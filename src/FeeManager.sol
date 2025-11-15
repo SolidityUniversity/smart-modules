@@ -20,7 +20,7 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
 
     function _authorizeUpgrade(address newImplementation) internal override {}
 
-    function setFee(uint256 _fee) external{
+    function setFee(uint256 _fee) external {
         fee = _fee;
     }
 
