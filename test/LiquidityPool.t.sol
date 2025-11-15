@@ -49,14 +49,7 @@ contract LiquidityPoolTest is Test {
         eip712 = new EIP712Swap();
 
         // 4. Liquidity Pool (decimals = 18)
-        pool = new LiquidityPool(
-            address(tokenA),
-            18,
-            address(tokenB),
-            18,
-            address(feeMgr),
-            address(eip712)
-        );
+        pool = new LiquidityPool(address(tokenA), 18, address(tokenB), 18, address(feeMgr), address(eip712));
         pool.initialize(30); // gives deployer DEFAULT_ADMIN_ROLE
     }
 
@@ -132,10 +125,7 @@ contract LiquidityPoolTest is Test {
 
     /* ---------- internal helpers ---------- */
 
-    function _hash(
-        ISwap.SwapRequest memory req,
-        bytes32 domainSeparator
-    ) internal pure returns (bytes32) {
+    function _hash(ISwap.SwapRequest memory req, bytes32 domainSeparator) internal pure returns (bytes32) {
         /* 1. structHash */
         bytes32 structHash = keccak256(
             abi.encode(
@@ -152,9 +142,6 @@ contract LiquidityPoolTest is Test {
         );
 
         /* 2. EIP-712 digest = keccak256("\x19\x01", domainSeparator, structHash) */
-        return
-            keccak256(
-                abi.encodePacked("\x19\x01", domainSeparator, structHash)
-            );
+        return keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
     }
 }
