@@ -94,9 +94,13 @@ contract FeeManagerTest is Test {
             token0: address(0x1), token1: address(0x2), amount0: 100e18, reserveToken0: 10000e18, reserveToken1: 10000e6
         });
 
+        // 10x larger
         ISwap.SwapParams memory largeParams = ISwap.SwapParams({
-            token0: address(0x1), token1: address(0x2), amount0: 1000e18, reserveToken0: 10000e18, reserveToken1: 10000e6
-            // 10x larger
+            token0: address(0x1),
+            token1: address(0x2),
+            amount0: 1000e18,
+            reserveToken0: 10000e18,
+            reserveToken1: 10000e6
         });
 
         uint256 smallFee = feeManager.getFee(smallParams);
