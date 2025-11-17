@@ -11,9 +11,10 @@ contract EIP712Swap is EIP712 {
 
     mapping(address => uint256) private _nonces;
 
-    bytes32 private constant SWAP_TYPEHASH = keccak256(
-        "SwapRequest(address pool,address sender,address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 nonce,uint256 deadline)"
-    );
+    bytes32 private constant SWAP_TYPEHASH =
+        keccak256(
+            "SwapRequest(address pool,address sender,address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 nonce,uint256 deadline)"
+        );
 
     error InvalidSignature();
     error ExpiredSwapRequest();
@@ -29,7 +30,10 @@ contract EIP712Swap is EIP712 {
         return _nonces[_sender];
     }
 
-    function verify(ISwap.SwapRequest memory _swapRequest, bytes memory _signature) public view returns (bool) {
+    function verify(
+        ISwap.SwapRequest memory _swapRequest,
+        bytes memory _signature
+    ) public view returns (bool) {
         bytes32 digest = _hashTypedDataV4(
             keccak256(
                 abi.encode(
@@ -49,7 +53,10 @@ contract EIP712Swap is EIP712 {
         return signer == _swapRequest.sender;
     }
 
-    function executeSwap(ISwap.SwapRequest memory _swapRequest, bytes memory _signature) public returns (bool) {
+    function executeSwap(
+        ISwap.SwapRequest memory _swapRequest,
+        bytes memory _signature
+    ) public returns (bool) {
         if (!verify(_swapRequest, _signature)) revert InvalidSignature();
         if (_swapRequest.deadline < block.timestamp) {
             revert ExpiredSwapRequest();
