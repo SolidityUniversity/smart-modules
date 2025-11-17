@@ -51,18 +51,21 @@ contract EIP712Swap is EIP712 {
 
     function executeSwap(ISwap.SwapRequest memory _swapRequest, bytes memory _signature) public returns (bool) {
         if (!verify(_swapRequest, _signature)) revert InvalidSignature();
-        if (_swapRequest.deadline < block.timestamp) revert ExpiredSwapRequest();
-        if (_swapRequest.nonce != _nonces[_swapRequest.sender]) revert InvalidNonce();
+        if (_swapRequest.deadline < block.timestamp) {
+            revert ExpiredSwapRequest();
+        }
+        if (_swapRequest.nonce != _nonces[_swapRequest.sender]) {
+            revert InvalidNonce();
+        }
 
         _nonces[_swapRequest.sender]++;
-        LiquidityPool(_swapRequest.pool)
-            .swap(
-                _swapRequest.sender,
-                _swapRequest.tokenIn,
-                _swapRequest.tokenOut,
-                _swapRequest.amountIn,
-                _swapRequest.minAmountOut
-            );
+        LiquidityPool(_swapRequest.pool).swap(
+            _swapRequest.sender,
+            _swapRequest.tokenIn,
+            _swapRequest.tokenOut,
+            _swapRequest.amountIn,
+            _swapRequest.minAmountOut
+        );
 
         return true;
     }
